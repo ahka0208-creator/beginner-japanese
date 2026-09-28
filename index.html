@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🇯🇵 日文特訓 (純新手入門版)</title>
+    <title>🇯🇵 日文特訓 (純新手語音教學版)</title>
     <style>
         :root {
             --bg-dark: #1E232E;       
@@ -283,7 +283,7 @@
 <div class="container">
     <div class="header">
         <h2>🇯🇵 日文特訓 (純新手版)</h2>
-        <p>由零開始 | 基礎五十音 | 第一課文法</p>
+        <p>全自動雙語導讀 | 基礎五十音 | 第一課文法</p>
     </div>
 
     <!-- 導航列 -->
@@ -319,7 +319,7 @@
         <!-- 2. 單字閃卡 (Level 0) -->
         <div id="view-flashcard" class="view-section">
             <div class="beginner-tip">
-                💡 <strong>單字點記？</strong> 睇住日文，嘗試自己讀出嚟，然後先㩒落去睇背面嘅中文。
+                🎧 <strong>語音教學模式已啟動：</strong> 切換卡片會自動讀出日文；點擊翻去背面會自動讀出廣東話解答。
             </div>
             <div class="flashcard-container">
                 <div class="flashcard" id="fc-element" onclick="toggleFlashcard()">
@@ -365,18 +365,18 @@
 </div>
 
 <script>
-    // --- 語音合成 (TTS) ---
-    function speak(text) {
+    // --- 智能雙語語音引擎 (TTS) ---
+    function speak(text, lang = 'ja-JP', rate = 0.75) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = 'ja-JP'; 
-            msg.rate = 0.75; // 極慢語速，照顧新手
+            msg.lang = lang; // 支援切換 'ja-JP' (日文) 或 'zh-HK' (廣東話)
+            msg.rate = rate; // 速度控制
             window.speechSynthesis.speak(msg);
         }
     }
 
-    // --- 數據庫 (融合筆記精華) ---
+    // --- 數據庫 ---
     // 清音
     const seionData = [
         { r: 'a', h: 'あ', k: 'ア' }, { r: 'i', h: 'い', k: 'イ' }, { r: 'u', h: 'う', k: 'ウ' }, { r: 'e', h: 'え', k: 'エ' }, { r: 'o', h: 'お', k: 'オ' },
@@ -414,24 +414,24 @@
         { r: 'pya', h: 'ぴゃ', k: 'ピャ' }, { r: 'pyu', h: 'ぴゅ', k: 'ピュ' }, { r: 'pyo', h: 'ぴょ', k: 'ピョ' }
     ];
 
-    // 純新手詞庫 (全平假名展示，降級難度)
+    // 純新手詞庫
     const vocabData = [
         { cat: '打招呼', jp: 'おはよう', kana: 'ohayou', zh: '早晨' },
-        { cat: '打招呼', jp: 'こんにちは', kana: 'konnichiwa', zh: '你好 (白天)' },
+        { cat: '打招呼', jp: 'こんにちは', kana: 'konnichiwa', zh: '你好' },
         { cat: '打招呼', jp: 'さようなら', kana: 'sayounara', zh: '再見' },
-        { cat: '打招呼', jp: 'すみません', kana: 'sumimasen', zh: '對不起 / 不好意思' },
+        { cat: '打招呼', jp: 'すみません', kana: 'sumimasen', zh: '不好意思' },
         { cat: '代名詞', jp: 'わたし', kana: 'watashi', zh: '我' },
         { cat: '代名詞', jp: 'あなた', kana: 'anata', zh: '你' },
         { cat: '代名詞', jp: 'これ', kana: 'kore', zh: '這個' },
-        { cat: '簡單名詞', jp: 'ほん', kana: 'hon (本)', zh: '書' },
-        { cat: '簡單名詞', jp: 'みず', kana: 'mizu (水)', zh: '水' },
-        { cat: '簡單名詞', jp: 'くるま', kana: 'kuruma (車)', zh: '車' },
+        { cat: '簡單名詞', jp: 'ほん', kana: 'hon', zh: '書' },
+        { cat: '簡單名詞', jp: 'みず', kana: 'mizu', zh: '水' },
+        { cat: '簡單名詞', jp: 'くるま', kana: 'kuruma', zh: '車' },
         { cat: '數字', jp: 'いち', kana: 'ichi', zh: '一' },
         { cat: '數字', jp: 'に', kana: 'ni', zh: '二' },
         { cat: '數字', jp: 'さん', kana: 'san', zh: '三' }
     ];
 
-    // 新手第一課文法 (最基礎句型)
+    // 新手第一課文法
     const grammarData = [
         { pattern: 'A は B です', meaning: 'A 是 B。 (最基本的肯定句)', exJp: 'わたしは 学生(がくせい) です。', exZh: '我是學生。' },
         { pattern: 'A は B ではありません', meaning: 'A 不是 B。 (最基本的否定句)', exJp: 'わたしは 先生(せんせい) ではありません。', exZh: '我不是老師。' },
@@ -485,13 +485,13 @@
                 div.className = 'kana-card';
                 const char = currentKanaStyle === 'hiragana' ? item.h : item.k;
                 div.innerHTML = `<div class="kana-char">${char}</div><div class="kana-romaji">${item.r}</div>`;
-                div.onclick = () => speak(char);
+                div.onclick = () => speak(char, 'ja-JP', 0.8);
             }
             grid.appendChild(div);
         });
     }
 
-    // --- 閃卡邏輯 ---
+    // --- 閃卡邏輯 (結合語音教學引擎) ---
     let currentCardIdx = 0;
     
     function loadFlashcard() {
@@ -508,10 +508,38 @@
         }, 150);
     }
 
-    function toggleFlashcard() { document.getElementById('fc-element').classList.toggle('flipped'); }
-    function prevCard() { currentCardIdx = (currentCardIdx - 1 + vocabData.length) % vocabData.length; loadFlashcard(); }
-    function nextCard() { currentCardIdx = (currentCardIdx + 1) % vocabData.length; loadFlashcard(); }
-    function playCurrentWord() { speak(vocabData[currentCardIdx].jp); }
+    function toggleFlashcard() { 
+        const card = document.getElementById('fc-element');
+        const isFlipped = card.classList.toggle('flipped'); 
+        const data = vocabData[currentCardIdx];
+
+        // 翻牌自動語音教學邏輯
+        if (isFlipped) {
+            // 翻去背面 -> 讀廣東話答案
+            speak(data.zh, 'zh-HK', 0.9);
+        } else {
+            // 翻返前面 -> 讀日文鞏固記憶
+            speak(data.jp, 'ja-JP', 0.75);
+        }
+    }
+
+    function prevCard() { 
+        currentCardIdx = (currentCardIdx - 1 + vocabData.length) % vocabData.length; 
+        loadFlashcard(); 
+        // 切換新卡片時自動讀日文 (利用 onclick 直接觸發，完美支援 iOS)
+        speak(vocabData[currentCardIdx].jp, 'ja-JP', 0.75);
+    }
+
+    function nextCard() { 
+        currentCardIdx = (currentCardIdx + 1) % vocabData.length; 
+        loadFlashcard(); 
+        // 切換新卡片時自動讀日文
+        speak(vocabData[currentCardIdx].jp, 'ja-JP', 0.75);
+    }
+
+    function playCurrentWord() { 
+        speak(vocabData[currentCardIdx].jp, 'ja-JP', 0.75); 
+    }
 
     // --- 文法句型邏輯 ---
     function renderGrammar() {
@@ -523,7 +551,7 @@
             div.innerHTML = `
                 <div class="gr-pattern">
                     <span>${item.pattern}</span>
-                    <button class="speak-btn" onclick="speak('${item.exJp.replace(/\([^)]*\)/g, '')}')">🔊</button>
+                    <button class="speak-btn" onclick="speak('${item.exJp.replace(/\([^)]*\)/g, '')}', 'ja-JP', 0.8)">🔊</button>
                 </div>
                 <div class="gr-meaning">${item.meaning}</div>
                 <div class="gr-example">${item.exJp}</div>
@@ -540,7 +568,6 @@
         const optionsBox = document.getElementById('quizOptions');
         optionsBox.innerHTML = '';
         
-        // 新手測驗：一半單字，一半清音
         const isVocabQuiz = Math.random() > 0.5;
         let questionData = {};
         let options = [];
@@ -569,7 +596,7 @@
         }
 
         document.getElementById('quizQuestion').innerText = questionData.q;
-        options.sort(() => Math.random() - 0.5); // 打亂
+        options.sort(() => Math.random() - 0.5);
 
         options.forEach(opt => {
             const btn = document.createElement('button');
@@ -579,7 +606,7 @@
             optionsBox.appendChild(btn);
         });
         
-        speak(questionData.q);
+        speak(questionData.q, 'ja-JP', 0.8);
     }
 
     function checkAnswer(btn, selected) {
